@@ -1,0 +1,1766 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   PALETA KOLORÓW PREMIUM SPORTMATE (iOS OLED + GARMIN + STRAVA SEMANTIC TOKENS)
+   Zgodna w 100% z Księgą Standardów Projektowych SportMate
+   ========================================================================== */
+:root,
+:root[data-theme="dark"] {
+  --bg-base: #090A0F;
+  --bg-surface: #151722;
+  --bg-elevated: #1E2130;
+  --bg-card-hover: #232738;
+  --bg-segmented: #11131C;
+  --bg-segment-active: #262A3D;
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-divider: rgba(255, 255, 255, 0.07);
+  --text-primary: #F5F6FA;
+  --text-secondary: #8E95B2;
+  --text-muted: #5E6582;
+  --text-on-accent: #04120C;
+
+  /* Kolory semantyczne (Garmin / Strava / Apple Fitness) */
+  --accent-mint: #10B981;        /* Regeneracja / Gotowość */
+  --accent-mint-bright: #3ED6A3;
+  --accent-strava: #FF6B35;      /* Wysiłek / Trening / Rekordy */
+  --accent-strava-deep: #FC4C02;
+  --accent-water: #38BDF8;       /* Sen i Nawodnienie */
+  --accent-indigo: #6366F1;      /* AI / Analiza */
+  --accent-gold: #F59E0B;        /* Odznaki / Tłuszcze */
+  --accent-error: #F43F5E;
+
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --glass-bg: rgba(9, 10, 15, 0.78);
+  --logo-box-bg: #1B1F32;
+
+  /* Aliasy semantyczne dla komponentów Kreatora Planu, Diety i Rankingów */
+  --brand-emerald: var(--accent-mint-bright);
+  --strava-orange: var(--accent-strava);
+  --sky-sleep: var(--accent-water);
+  --border-hairline: var(--border-subtle);
+  --bg-canvas: var(--bg-base);
+
+  /* Zmienne tła i siatki wykresu (Ciemny OLED) */
+  --chart-plot-bg: linear-gradient(180deg, rgba(14, 16, 24, 0.85) 0%, rgba(9, 10, 15, 0.65) 100%);
+  --chart-plot-border: rgba(255, 255, 255, 0.07);
+  --chart-grid-stroke: rgba(255, 255, 255, 0.07);
+  --chart-axis-tick: #94A3B8;
+  --chart-axis-line: rgba(255, 255, 255, 0.12);
+  --chart-prev-bar: rgba(148, 163, 184, 0.26);
+  --chart-tooltip-bg: rgba(15, 17, 26, 0.96);
+  --chart-tooltip-border: rgba(255, 255, 255, 0.14);
+  --chart-tooltip-text: #F8FAFC;
+  --chart-tooltip-sub: #94A3B8;
+}
+
+:root[data-theme="light"] {
+  --bg-base: #F2F4F8;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #F4F6FA;
+  --bg-card-hover: #EBF0F7;
+  --bg-segmented: #E6EAF2;
+  --bg-segment-active: #FFFFFF;
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-divider: rgba(15, 23, 42, 0.10);
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-on-accent: #FFFFFF;
+
+  --accent-mint: #059669;
+  --accent-mint-bright: #10B981;
+  --accent-strava: #FC4C02;
+  --accent-strava-deep: #E2573B;
+  --accent-water: #0284C7;
+  --accent-indigo: #4F46E5;
+  --accent-gold: #D97706;
+  --accent-error: #E11D48;
+
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 4px 16px rgba(15, 23, 42, 0.06);
+  --glass-bg: rgba(242, 244, 248, 0.86);
+  --logo-box-bg: #1B1F32;
+
+  /* Zmienne tła i siatki wykresu (Jasny motyw — czyste, świeże tło bez szarości) */
+  --chart-plot-bg: linear-gradient(180deg, #FFFFFF 0%, #F0FDF9 55%, #FFF8F3 100%);
+  --chart-plot-border: rgba(16, 185, 129, 0.24);
+  --chart-grid-stroke: rgba(16, 185, 129, 0.13);
+  --chart-axis-tick: #334155;
+  --chart-axis-line: rgba(15, 23, 42, 0.12);
+  --chart-prev-bar: rgba(100, 116, 139, 0.24);
+  --chart-tooltip-bg: rgba(255, 255, 255, 0.98);
+  --chart-tooltip-border: rgba(16, 185, 129, 0.32);
+  --chart-tooltip-text: #0F172A;
+  --chart-tooltip-sub: #475569;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #030407;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Pasek narzędzi demonstracyjnych dla Jurorów */
+.juror-toolbar {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 100;
+  max-width: 960px;
+  padding: 0 12px;
+}
+
+.juror-btn {
+  background: #151722;
+  color: #8E95B2;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 7px 13px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.18s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.juror-btn:hover {
+  color: #F5F6FA;
+  background: #1E2130;
+  border-color: rgba(62, 214, 163, 0.35);
+}
+
+.juror-btn.active-demo {
+  color: #3ED6A3;
+  border-color: rgba(62, 214, 163, 0.45);
+  background: rgba(62, 214, 163, 0.1);
+}
+
+/* Ramka telefonu 390x844 (zgodnie ze specyfikacją iOS SportMate) */
+.phone-frame {
+  width: 390px;
+  height: 844px;
+  background-color: var(--bg-base);
+  border-radius: 46px;
+  border: 10px solid #1C1F2E;
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+@media (max-width: 440px) {
+  body {
+    background-color: var(--bg-base);
+  }
+  .juror-toolbar {
+    display: none;
+  }
+  .phone-frame {
+    width: 100vw;
+    height: 100vh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* Pasek statusu iOS */
+.status-bar {
+  height: 36px;
+  padding: 0 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  user-select: none;
+  background: var(--glass-bg);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  z-index: 30;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-primary);
+}
+
+/* Szklany nagłówek aplikacji (iOS Glassmorphism) */
+.app-header {
+  height: 52px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--glass-bg);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  z-index: 25;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: none;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.back-btn:active {
+  transform: scale(0.94);
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.brand-wordmark {
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.brand-wordmark span {
+  color: var(--accent-mint-bright);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.icon-btn:hover {
+  color: var(--text-primary);
+}
+
+.notif-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-strava);
+  border: 1.5px solid var(--bg-base);
+}
+
+/* Główny przewijany obszar treści */
+.screen-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 14px 16px 104px 16px;
+}
+
+.screen-content::-webkit-scrollbar {
+  width: 0px;
+}
+
+/* Szklany dolny pasek nawigacji */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: var(--glass-bg);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 8px 10px 8px;
+  z-index: 25;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 0;
+  background: none;
+  border: none;
+  transition: color 0.18s ease, transform 0.15s ease;
+  font-family: inherit;
+}
+
+.nav-item.active {
+  color: var(--accent-mint-bright);
+}
+
+.nav-icon-wrap {
+  width: 32px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Typografia sportowa (Strava / Apple Fitness) */
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+
+.hero-metric {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-unit {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-left: 3px;
+  letter-spacing: 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 2px 10px 2px;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-secondary);
+}
+
+.section-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-mint-bright);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: inherit;
+}
+
+/* Bezramkowe karty z głębią (iOS Surface) */
+.card {
+  background: var(--bg-surface);
+  border-radius: 20px;
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-subtle);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.card.clickable {
+  cursor: pointer;
+}
+
+.card.clickable:active {
+  transform: scale(0.985);
+}
+
+/* iOS Inset Grouped List */
+.grouped-list {
+  background: var(--bg-surface);
+  border-radius: 20px;
+  padding: 4px 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border-divider);
+  font-size: 13px;
+  gap: 10px;
+}
+
+.list-row.interactive {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.list-row.interactive:active {
+  opacity: 0.7;
+}
+
+.list-row:last-child {
+  border-bottom: none;
+}
+
+.mono-icon {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Przyciski */
+.btn {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--accent-mint-bright);
+  color: var(--text-on-accent);
+}
+
+.btn-strava {
+  background: var(--accent-strava);
+  color: #FFFFFF;
+}
+
+.btn-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-danger {
+  background: rgba(244, 63, 94, 0.14);
+  color: var(--accent-error);
+}
+
+.btn-sm {
+  padding: 8px 10px;
+  font-size: 11.5px;
+  border-radius: 11px;
+  width: auto;
+  min-width: 0;
+  gap: 5px;
+}
+
+/* Siatka 2 przycisków akcji na kafelkach (zapobiega wystawaniu poza ekran) */
+.card-actions-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.card-actions-row > .btn {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 8px;
+  font-size: 11.5px;
+  gap: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Natywny przełącznik segmentowy (iOS Segmented Control) */
+.segmented-control {
+  display: flex;
+  flex-wrap: wrap;
+  background: var(--bg-segmented);
+  padding: 3px;
+  border-radius: 13px;
+  margin-bottom: 14px;
+  gap: 3px;
+}
+
+.segment-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: inherit;
+  transition: all 0.18s ease;
+}
+
+.segment-btn.active {
+  background: var(--bg-segment-active);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+/* Pigułki filtrów i wyborów — zawijane (flex-wrap: wrap), aby wszystkie opcje były od razu klikalne myszką */
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  overflow-x: visible;
+  padding-bottom: 2px;
+  margin-bottom: 12px;
+}
+
+.filter-pill {
+  padding: 6px 11px;
+  border-radius: 99px;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: normal;
+  text-align: center;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.filter-pill:hover {
+  border-color: var(--accent-mint-bright);
+  color: var(--text-primary);
+}
+
+.filter-pill.active {
+  background: var(--accent-mint-bright);
+  color: #04120C;
+  border-color: transparent;
+  font-weight: 800;
+}
+
+/* Etykiety semantyczne (Badges) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.badge-mint {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-mint-bright);
+}
+
+.badge-strava {
+  background: rgba(255, 107, 53, 0.16);
+  color: var(--accent-strava);
+}
+
+.badge-water {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-water);
+}
+
+.badge-indigo {
+  background: rgba(99, 102, 241, 0.16);
+  color: #818CF8;
+}
+
+.badge-gold {
+  background: rgba(245, 158, 11, 0.16);
+  color: var(--accent-gold);
+}
+
+/* Paski postępu */
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent-mint-bright);
+  border-radius: 99px;
+  transition: width 0.35s ease;
+}
+
+/* Pasek kalendarza 7 dni (Ekran Dziś) */
+.week-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.day-pill {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 8px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: inherit;
+  transition: all 0.15s ease;
+  box-shadow: var(--shadow-card);
+}
+
+.day-pill.active {
+  background: var(--accent-mint-bright);
+  color: var(--text-on-accent);
+  border-color: transparent;
+}
+
+.day-name {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.day-num {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.day-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.day-dot.done {
+  background: var(--accent-strava);
+}
+
+.day-pill.active .day-dot.done {
+  background: var(--text-on-accent);
+}
+
+/* Formularze */
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.form-textarea {
+  resize: none;
+  min-height: 70px;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--accent-mint-bright);
+}
+
+/* Chipy wyboru */
+.chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.choice-chip {
+  padding: 8px 13px;
+  border-radius: 99px;
+  background: var(--bg-elevated);
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.choice-chip.selected {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: var(--accent-mint-bright);
+  color: var(--text-primary);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+/* Tabela serii treningowych */
+.sets-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.sets-table th {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 6px 4px;
+}
+
+.sets-table td {
+  padding: 6px 4px;
+  vertical-align: middle;
+}
+
+.set-row {
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.set-row.completed {
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.set-input {
+  width: 62px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.set-input:focus {
+  outline: none;
+  border-color: var(--accent-mint-bright);
+}
+
+.set-check-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: none;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.set-check-btn.done {
+  background: var(--accent-mint-bright);
+  color: var(--text-on-accent);
+}
+
+/* Pływający pasek timera przerwy (Dynamic Island / Live Activity) */
+.floating-rest-bar {
+  position: sticky;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  background: rgba(17, 19, 28, 0.96);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  z-index: 40;
+  margin-top: 14px;
+}
+
+.rest-bar-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #F5F6FA;
+  border: none;
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.rest-bar-btn:hover {
+  background: rgba(255, 255, 255, 0.20);
+}
+
+.rest-bar-btn:active {
+  transform: scale(0.95);
+}
+
+/* Awatary użytkowników ze statusem online */
+.avatar-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.online-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent-mint-bright);
+  border: 2px solid var(--bg-surface);
+  z-index: 2;
+}
+
+/* Mapa Leaflet w Łodzi + karuzela kart obiektów */
+#lodz-map {
+  width: 100%;
+  height: 330px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  z-index: 5;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-card);
+}
+
+.venue-carousel {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.venue-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.venue-card-slide {
+  min-width: 245px;
+  scroll-snap-align: start;
+  background: var(--bg-surface);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: border-color 0.15s ease;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+}
+
+.venue-card-slide.active {
+  border-color: var(--accent-mint-bright);
+}
+
+.sm-map-pin {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #151722;
+  border: 3px solid #FF6B35;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sm-map-pin::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FF6B35;
+}
+
+/* Czat */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+.chat-box::-webkit-scrollbar {
+  width: 3px;
+}
+.chat-box::-webkit-scrollbar-thumb {
+  background: var(--border-divider);
+  border-radius: 3px;
+}
+
+.msg-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.msg-row.outgoing {
+  justify-content: flex-end;
+}
+
+.msg-bubble {
+  max-width: 82%;
+  padding: 11px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.msg-incoming {
+  align-self: flex-start;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border-bottom-left-radius: 5px;
+}
+
+.msg-outgoing {
+  align-self: flex-end;
+  background: var(--accent-mint-bright);
+  color: var(--text-on-accent);
+  font-weight: 500;
+  border-bottom-right-radius: 5px;
+}
+
+.msg-meta {
+  font-size: 10px;
+  opacity: 0.75;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+/* Pusty stan w tle czatu AI („Jak mogę pomóc Ci dzisiaj?”) oraz animacja 3 kropek */
+.ai-chat-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 28px 18px;
+  min-height: 170px;
+  opacity: 0.72;
+  user-select: none;
+  pointer-events: none;
+}
+
+.ai-chat-empty-icon {
+  margin-bottom: 8px;
+  opacity: 0.85;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.25));
+}
+
+.ai-chat-empty-title {
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.ai-chat-empty-sub {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  max-width: 250px;
+  line-height: 1.4;
+}
+
+.ai-typing-bubble {
+  padding: 12px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+}
+
+.ai-typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 14px;
+}
+
+.ai-typing-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-mint-bright);
+  opacity: 0.4;
+  animation: aiDotPulse 1.2s infinite ease-in-out;
+}
+
+.ai-typing-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.ai-typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.ai-typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes aiDotPulse {
+  0%, 80%, 100% {
+    transform: translateY(0) scale(0.85);
+    opacity: 0.35;
+  }
+  40% {
+    transform: translateY(-4px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Odznaki heksagonalne 3D (styl Garmin Connect) */
+.hex-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.hex-badge-card {
+  background: var(--bg-surface);
+  border-radius: 18px;
+  padding: 14px 8px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-subtle);
+}
+
+.hex-icon-wrap {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Powiadomienie Toast */
+.toast-notification {
+  position: absolute;
+  top: 46px;
+  left: 16px;
+  right: 16px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  padding: 12px 15px;
+  border-radius: 16px;
+  box-shadow: 0 14px 32px rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  z-index: 90;
+  transform: translateY(-150%);
+  opacity: 0;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  border: 1px solid var(--border-subtle);
+}
+
+.toast-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Modal */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 10, 15, 0.78);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 80;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-card {
+  width: 100%;
+  background: var(--bg-surface);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Wykres słupkowy */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 92px;
+  padding-top: 14px;
+  gap: 10px;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar-fill {
+  width: 100%;
+  max-width: 24px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  transition: height 0.3s ease;
+}
+
+.bar-fill.highlight {
+  background: var(--accent-strava);
+}
+
+.bar-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Scena podglądu awatara / maskotki */
+.mascot-stage {
+  background: radial-gradient(circle at 50% 35%, rgba(62, 214, 163, 0.16), transparent 65%), var(--bg-elevated);
+  border-radius: 22px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.color-swatch-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.color-swatch.active {
+  transform: scale(1.14);
+  border-color: var(--accent-mint-bright);
+  box-shadow: 0 0 12px rgba(62, 214, 163, 0.35);
+}
+
+@keyframes floatMascot {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+.mascot-floating {
+  animation: floatMascot 3.2s ease-in-out infinite;
+}
+
+/* Grupy Społecznościowe (FB Groups Style) */
+.post-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border-divider);
+}
+
+.post-action-btn {
+  flex: 1;
+  background: var(--bg-elevated);
+  border: none;
+  color: var(--text-secondary);
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.post-action-btn.liked {
+  background: rgba(255, 107, 53, 0.15);
+  color: var(--accent-strava);
+}
+
+/* ==========================================================================
+   ANIMACJE RYSIA (STYL DUOLINGO) ORAZ EKRAN AWANSU POZIOMU (LEVEL UP)
+   ========================================================================== */
+@keyframes lynxFloatBounce {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+}
+
+@keyframes lynxJumpCelebrate {
+  0% { transform: translateY(0) scale(1) rotate(0deg); }
+  20% { transform: translateY(-14px) scale(1.1, 0.94) rotate(-6deg); }
+  45% { transform: translateY(0) scale(0.95, 1.06) rotate(5deg); }
+  70% { transform: translateY(-9px) scale(1.06) rotate(-3deg); }
+  100% { transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+@keyframes lynxEarTwitchLeft {
+  0%, 84%, 100% { transform: rotate(0deg); }
+  88% { transform: rotate(-9deg); }
+  93% { transform: rotate(5deg); }
+}
+
+@keyframes lynxEarTwitchRight {
+  0%, 76%, 100% { transform: rotate(0deg); }
+  80% { transform: rotate(10deg); }
+  85% { transform: rotate(-4deg); }
+}
+
+@keyframes lynxBlink {
+  0%, 92%, 100% { transform: scaleY(0); opacity: 0; }
+  95%, 97% { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes lynxPawWave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-14deg) translateY(-2px); }
+  50% { transform: rotate(8deg); }
+  75% { transform: rotate(-10deg) translateY(-1px); }
+}
+
+@keyframes sparklePulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.7; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+
+.mascot-float {
+  animation: lynxFloatBounce 3s ease-in-out infinite;
+}
+
+.mascot-jump-celebrate {
+  animation: lynxJumpCelebrate 0.85s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.lynx-ear-left {
+  transform-origin: 32px 40px;
+  animation: lynxEarTwitchLeft 4.2s ease-in-out infinite;
+}
+
+.lynx-ear-right {
+  transform-origin: 88px 40px;
+  animation: lynxEarTwitchRight 3.8s ease-in-out infinite;
+}
+
+.lynx-blink-lids {
+  transform-origin: 60px 54px;
+  animation: lynxBlink 4.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.lynx-waving-paw {
+  transform-origin: 84px 88px;
+  animation: lynxPawWave 2.4s ease-in-out infinite;
+}
+
+.lynx-sparkles {
+  transform-origin: 60px 50px;
+  animation: sparklePulse 1.4s ease-in-out infinite;
+}
+
+/* Modal Awansu z Rysiem (Duolingo Level-Up Celebration) */
+.levelup-celebration-card {
+  width: 100%;
+  max-width: 358px;
+  background: var(--bg-surface);
+  border: 2px solid rgba(245, 158, 11, 0.45);
+  border-radius: 28px;
+  padding: 24px 20px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), 0 0 40px rgba(245, 158, 11, 0.22);
+  animation: levelUpCardPop 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes levelUpCardPop {
+  0% { transform: scale(0.82) translateY(24px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.levelup-rays {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  width: 280px;
+  height: 280px;
+  margin-left: -140px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.26) 0%, rgba(217, 138, 78, 0.08) 45%, transparent 72%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.levelup-lynx-stage {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 4px auto;
+}
+
+.levelup-level-pill {
+  margin-top: -12px;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #111827;
+  font-weight: 800;
+  font-size: 0.8125rem;
+  padding: 5px 14px;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+  border: 2px solid #FFFBEB;
+  z-index: 3;
+}
+
+.levelup-confetti-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.confetti-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: confettiFloat 2.4s ease-in-out infinite;
+}
+
+@keyframes confettiFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+  50% { transform: translateY(-12px) rotate(45deg); opacity: 1; }
+}
+
+.confetti-dot.c1 { top: 14%; left: 12%; background: #F59E0B; animation-delay: 0.1s; }
+.confetti-dot.c2 { top: 22%; right: 14%; background: #34D399; animation-delay: 0.3s; }
+.confetti-dot.c3 { top: 38%; left: 8%; background: #FF5A1F; animation-delay: 0.5s; }
+.confetti-dot.c4 { top: 34%; right: 10%; background: #38BDF8; animation-delay: 0.2s; }
+.confetti-dot.c5 { top: 10%; left: 28%; background: #A855F7; animation-delay: 0.4s; }
+.confetti-dot.c6 { top: 12%; right: 26%; background: #FBBF24; animation-delay: 0.6s; }
+.confetti-dot.c7 { top: 46%; left: 16%; background: #10B981; animation-delay: 0.15s; }
+.confetti-dot.c8 { top: 44%; right: 16%; background: #FB923C; animation-delay: 0.35s; }
+
+/* Dodatkowe klasy komponentów dla Kreatora Planu, Rankingów Strava i Diety */
+.segmented-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  background: var(--bg-segmented);
+  padding: 3px;
+  border-radius: 13px;
+  margin-bottom: 14px;
+  gap: 3px;
+}
+
+.seg-tab,
+.seg-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: inherit;
+  transition: all 0.18s ease;
+}
+
+.seg-tab.active,
+.seg-btn.active {
+  background: var(--bg-segment-active);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+/* Czat z partnerami treningowymi i grupami */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 4px 2px;
+}
+
+.chat-bubble {
+  max-width: 84%;
+  padding: 10px 13px;
+  border-radius: 18px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.chat-bubble.incoming {
+  align-self: flex-start;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-bottom-left-radius: 5px;
+}
+
+.chat-bubble.outgoing {
+  align-self: flex-end;
+  background: var(--accent-mint-bright);
+  color: #04120C;
+  font-weight: 600;
+  border-bottom-right-radius: 5px;
+}
+
+/* Pulsująca kropka LIVE dla Wyzwań Tygodniowych */
+@keyframes livePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.55;
+  }
+}
+
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  display: inline-block;
+  animation: livePulse 1.6s infinite ease-in-out;
+}
+
+.page-subtitle {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-top: -6px;
+  margin-bottom: 14px;
+}
+
+.card-elevated {
+  background: var(--bg-elevated);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-mint-bright);
+}
+
+.badge-sky {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-water);
+}
+
+.badge-amber {
+  background: rgba(245, 158, 11, 0.16);
+  color: var(--accent-gold);
+}
+
+.badge-neutral {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+}
+
+.metric-box {
+  background: var(--bg-elevated);
+  padding: 10px 8px;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+}
+
+.metric-box-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--text-secondary);
+  margin-bottom: 3px;
+}
+
+.metric-box-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.input-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.input-field:focus {
+  border-color: var(--accent-mint-bright);
+}
+
+.chip {
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.chip.selected {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: var(--accent-mint-bright);
+  color: var(--text-primary);
+}
+
+.map-wrapper {
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  background: var(--bg-elevated);
+}
+
+
+

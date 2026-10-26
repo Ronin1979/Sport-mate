@@ -1,0 +1,6 @@
+{
+  "name": "SportMate — Move Together",
+  "description": "Kompleksowy ekosystem treningowy, telemetryczny i społecznościowy dla sportowców w Łodzi z globalną maskotką Rysia/Pantery i kreatorem ludzkich awatarów.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
